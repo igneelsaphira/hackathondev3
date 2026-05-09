@@ -1,19 +1,14 @@
 import { TokenAnalysis, RiskCheck, DEMO_TOKENS } from "./demoData";
 
-export type { TokenAnalysis, RiskCheck } from "./demoData";
+export type { TokenAnalysis, RiskCheck };
 
 export async function analyzeToken(address: string): Promise<TokenAnalysis> {
-  // Si es un demo token, devolver directo
   if (DEMO_TOKENS[address]) {
     return DEMO_TOKENS[address];
   }
-
-  // Intentar análisis real con Jupiter + Solana
   try {
-    const analysis = await analyzeRealToken(address);
-    return analysis;
+    return await analyzeRealToken(address);
   } catch (e) {
-    // Fallback: análisis parcial con lo que podamos obtener
     return analyzePartial(address);
   }
 }
@@ -22,11 +17,9 @@ async function analyzeRealToken(address: string): Promise<TokenAnalysis> {
   const checks: RiskCheck[] = [];
   let score = 0;
   let canSell = false;
-  let liquidityUsd: number | undefined;
-  let tokenName = "Unknown";
+  let tokenName = "Desconocido";
   let tokenSymbol = "???";
 
-  // 1. Obtener info del token desde Jupiter
   try {
     const res = await fetch("https://token.jup.ag/all");
     const tokens = await res.json();
@@ -35,11 +28,9 @@ async function analyzeRealToken(address: string): Promise<TokenAnalysis> {
         t.address.toLowerCase() === address.toLowerCase() ||
         t.symbol.toLowerCase() === address.toLowerCase()
     );
-
     if (match) {
       tokenName = match.name;
       tokenSymbol = match.symbol;
-
       if (!match.tags || match.tags.length === 0) {
         checks.push({
           id: "metadata",
@@ -62,11 +53,8 @@ async function analyzeRealToken(address: string): Promise<TokenAnalysis> {
       });
       score += 15;
     }
-  } catch (e) {
-    // ignore
-  }
+  } catch (e) {}
 
-  // 2. Simular venta (Jupiter quote)
   try {
     const sellRes = await fetch(
       `https://quote-api.jup.ag/v6/quote?inputMint=${address}&outputMint=So11111111111111111111111111111111111111112&amount=1000000&slippageBps=50`
@@ -74,7 +62,6 @@ async function analyzeRealToken(address: string): Promise<TokenAnalysis> {
     if (sellRes.ok) {
       const sellData = await sellRes.json();
       canSell = true;
-
       if (sellData.priceImpactPct && parseFloat(sellData.priceImpactPct) > 5) {
         checks.push({
           id: "price_impact",
@@ -97,11 +84,8 @@ async function analyzeRealToken(address: string): Promise<TokenAnalysis> {
       });
       score += 35;
     }
-  } catch (e) {
-    // ignore
-  }
+  } catch (e) {}
 
-  // 3. Precio / liquidez (Jupiter price API)
   try {
     const priceRes = await fetch(`https://api.jup.ag/price/v2?ids=${address}`);
     if (priceRes.ok) {
@@ -119,11 +103,8 @@ async function analyzeRealToken(address: string): Promise<TokenAnalysis> {
         score += 15;
       }
     }
-  } catch (e) {
-    // ignore
-  }
+  } catch (e) {}
 
-  // Limitar score a 100
   score = Math.min(100, score);
 
   let riskLevel: TokenAnalysis["riskLevel"] = "low";
@@ -154,7 +135,6 @@ async function analyzeRealToken(address: string): Promise<TokenAnalysis> {
     riskScore: score,
     riskLevel,
     canSell,
-    liquidityUsd,
     checks,
     humanSummary,
     recommendation,
@@ -179,8 +159,7 @@ function analyzePartial(address: string): TokenAnalysis {
         scoreImpact: 0,
       },
     ],
-    humanSummary:
-      "No pudimos revisar este token en profundidad. Te recomendamos buscar más información antes de comprar.",
+    humanSummary: "No pudimos revisar este token en profundidad. Te recomendamos buscar más información antes de comprar.",
     recommendation: "No tenemos datos suficientes. Investiga por tu cuenta antes de arriesgar dinero.",
   };
 }
@@ -188,15 +167,15 @@ function analyzePartial(address: string): TokenAnalysis {
 export function getRiskColor(level: TokenAnalysis["riskLevel"]) {
   switch (level) {
     case "low":
-      return { bg: "bg-emerald-500", text: "text-emerald-500", lightBg: "bg-emerald-50", border: "border-emerald-200", label: "Riesgo bajo" };
+      return { bg: "bg-emerald-500", text: "text-emerald-400", hex: "#48bb78", border: "border-emerald-500/20", label: "Riesgo bajo" };
     case "medium":
-      return { bg: "bg-amber-500", text: "text-amber-500", lightBg: "bg-amber-50", border: "border-amber-200", label: "Riesgo medio" };
+      return { bg: "bg-amber-500", text: "text-amber-400", hex: "#ed8936", border: "border-amber-500/20", label: "Riesgo medio" };
     case "high":
-      return { bg: "bg-orange-500", text: "text-orange-500", lightBg: "bg-orange-50", border: "border-orange-200", label: "Riesgo alto" };
+      return { bg: "bg-orange-500", text: "text-orange-400", hex: "#ed8936", border: "border-orange-500/20", label: "Riesgo alto" };
     case "critical":
-      return { bg: "bg-red-600", text: "text-red-600", lightBg: "bg-red-50", border: "border-red-200", label: "Riesgo crítico" };
+      return { bg: "bg-red-500", text: "text-red-400", hex: "#f56565", border: "border-red-500/20", label: "Riesgo crítico" };
     case "unknown":
     default:
-      return { bg: "bg-slate-500", text: "text-slate-500", lightBg: "bg-slate-50", border: "border-slate-200", label: "No verificable" };
+      return { bg: "bg-slate-500", text: "text-slate-400", hex: "#8a94a8", border: "border-slate-500/20", label: "No verificable" };
   }
 }

@@ -33,20 +33,37 @@ export default function HumanExplanation() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="bg-slate-50 rounded-2xl border border-slate-200 p-6">
-      <h3 className="text-lg font-bold text-slate-800 mb-4">📖 ¿Qué significan estas cosas?</h3>
+    <div
+      className="rounded-2xl border p-6"
+      style={{ background: "rgba(255,255,255,0.02)", borderColor: "rgba(255,255,255,0.06)" }}
+    >
+      <h3 className="text-base font-bold mb-4" style={{ color: "#c9a96e" }}>
+        📖 ¿Qué significan estas cosas?
+      </h3>
       <div className="space-y-2">
         {explanations.map((exp, i) => (
-          <div key={i} className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+          <div
+            key={i}
+            className="rounded-lg overflow-hidden transition-colors"
+            style={{
+              background: openIndex === i ? "rgba(255,255,255,0.03)" : "transparent",
+              border: "1px solid rgba(255,255,255,0.05)",
+            }}
+          >
             <button
               onClick={() => setOpenIndex(openIndex === i ? null : i)}
-              className="w-full text-left px-4 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors"
+              className="w-full text-left px-4 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors"
             >
-              <span className="text-sm font-medium text-slate-700">{exp.term}</span>
-              <span className="text-slate-400 text-lg">{openIndex === i ? "−" : "+"}</span>
+              <span className="text-sm font-medium" style={{ color: "#e8ecf4" }}>{exp.term}</span>
+              <span className="text-lg font-light" style={{ color: "#4a5568" }}>
+                {openIndex === i ? "−" : "+"}
+              </span>
             </button>
             {openIndex === i && (
-              <div className="px-4 pb-3 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-2">
+              <div
+                className="px-4 pb-3 text-sm leading-relaxed"
+                style={{ color: "#8a94a8", borderTop: "1px solid rgba(255,255,255,0.04)" }}
+              >
                 {exp.text}
               </div>
             )}

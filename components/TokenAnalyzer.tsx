@@ -16,11 +16,9 @@ export default function TokenAnalyzer() {
   const handleAnalyze = async (inputAddress?: string) => {
     const addr = inputAddress || address.trim();
     if (!addr) return;
-
     setLoading(true);
     setError("");
     setResult(null);
-
     try {
       const analysis = await analyzeToken(addr);
       setResult(analysis);
@@ -48,88 +46,106 @@ ${result.checks.map((c) => `• ${c.title}: ${c.humanText}`).join("\n")}
   return (
     <div className="max-w-2xl mx-auto">
       {/* Input */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm mb-6">
-        <label className="block text-sm font-medium text-slate-700 mb-2">
+      <div
+        className="rounded-2xl border p-6 mb-5"
+        style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)" }}
+      >
+        <label className="block text-sm font-medium mb-2.5" style={{ color: "#8a94a8" }}>
           🔍 Pega la dirección del token de Solana
         </label>
-        <div className="flex gap-2">
+        <div className="flex gap-2.5">
           <input
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAnalyze()}
             placeholder="Ej: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-            className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            className="flex-1 rounded-xl px-4 py-3.5 text-sm font-mono outline-none transition-all"
+            style={{
+              background: "rgba(0,0,0,0.25)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "#e8ecf4",
+            }}
           />
           <button
             onClick={() => handleAnalyze()}
             disabled={loading || !address.trim()}
-            className="bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+            className="font-bold px-7 py-3.5 rounded-xl text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              background: "linear-gradient(135deg, #c9a96e, #a08050)",
+              color: "#0c1222",
+            }}
           >
-            {loading ? "Analizando..." : "Analizar token"}
+            {loading ? "Analizando..." : "Analizar"}
           </button>
         </div>
-        <p className="text-xs text-slate-400 mt-2">
+        <p className="text-xs mt-2.5" style={{ color: "#4a5568" }}>
           También puedes probar con uno de los ejemplos de abajo ↓
         </p>
       </div>
 
-      {/* Botones demo rápida */}
+      {/* Demo buttons */}
       {!result && !loading && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-          <button
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+          <DemoButton
+            emoji="🟢"
+            title="Token seguro"
+            desc="Pocas alarmas"
+            borderColor="rgba(72,187,120,0.2)"
             onClick={() => {
               setAddress(SAFE_TOKEN.address);
               handleAnalyze(SAFE_TOKEN.address);
             }}
-            className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-left hover:shadow-md hover:border-emerald-300 transition-all group"
-          >
-            <div className="text-2xl mb-2">🟢</div>
-            <div className="text-sm font-semibold text-emerald-800">Probar token seguro</div>
-            <div className="text-xs text-emerald-600 mt-1">USDC — pocas alarmas</div>
-          </button>
-          <button
+          />
+          <DemoButton
+            emoji="🟠"
+            title="Token riesgoso"
+            desc="Muchas alarmas"
+            borderColor="rgba(237,137,54,0.2)"
             onClick={() => {
               setAddress(RISKY_TOKEN.address);
               handleAnalyze(RISKY_TOKEN.address);
             }}
-            className="bg-orange-50 border border-orange-200 rounded-xl p-4 text-left hover:shadow-md hover:border-orange-300 transition-all group"
-          >
-            <div className="text-2xl mb-2">🟠</div>
-            <div className="text-sm font-semibold text-orange-800">Probar token riesgoso</div>
-            <div className="text-xs text-orange-600 mt-1">Muchas alarmas visibles</div>
-          </button>
-          <button
+          />
+          <DemoButton
+            emoji="🔴"
+            title="Token trampa"
+            desc="No se puede vender"
+            borderColor="rgba(245,101,101,0.2)"
             onClick={() => {
               setAddress(HONEYPOT_TOKEN.address);
               handleAnalyze(HONEYPOT_TOKEN.address);
             }}
-            className="bg-red-50 border border-red-200 rounded-xl p-4 text-left hover:shadow-md hover:border-red-300 transition-all group"
-          >
-            <div className="text-2xl mb-2">🔴</div>
-            <div className="text-sm font-semibold text-red-800">Probar token trampa</div>
-            <div className="text-xs text-red-600 mt-1">No se puede vender — cuidado</div>
-          </button>
+          />
         </div>
       )}
 
       {/* Loading */}
       {loading && (
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm text-center">
-          <div className="w-10 h-10 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-sm text-slate-600">Revisando señales de riesgo...</p>
-          <p className="text-xs text-slate-400 mt-1">Consultando precios, liquidez y permisos</p>
+        <div
+          className="rounded-2xl border p-10 text-center"
+          style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)" }}
+        >
+          <div
+            className="w-10 h-10 rounded-full border-[3px] mx-auto mb-4 animate-spin"
+            style={{ borderColor: "rgba(201,169,110,0.2)", borderTopColor: "#c9a96e" }}
+          />
+          <p className="text-sm" style={{ color: "#8a94a8" }}>Revisando señales de riesgo...</p>
+          <p className="text-xs mt-1" style={{ color: "#4a5568" }}>Consultando precios, liquidez y permisos</p>
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-6">
+        <div
+          className="rounded-2xl border p-5 mb-5"
+          style={{ background: "rgba(237,137,54,0.06)", borderColor: "rgba(237,137,54,0.15)" }}
+        >
           <div className="flex items-start gap-3">
             <span className="text-xl">⚠️</span>
             <div>
-              <p className="text-sm font-medium text-amber-800">{error}</p>
-              <p className="text-xs text-amber-600 mt-1">
+              <p className="text-sm font-medium" style={{ color: "#f6ad55" }}>{error}</p>
+              <p className="text-xs mt-1" style={{ color: "#8a94a8" }}>
                 Los ejemplos de arriba funcionan sin depender de APIs externas.
               </p>
             </div>
@@ -137,63 +153,105 @@ ${result.checks.map((c) => `• ${c.title}: ${c.humanText}`).join("\n")}
         </div>
       )}
 
-      {/* Resultado */}
+      {/* Result */}
       {result && (
-        <div className="space-y-6">
-          {/* Header del token */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div className="space-y-5">
+          {/* Token header */}
+          <div
+            className="rounded-2xl border p-6"
+            style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)" }}
+          >
             <div className="flex items-center justify-between mb-2">
               <div>
-                <h2 className="text-xl font-bold text-slate-800">{result.name}</h2>
-                <p className="text-sm text-slate-500">{result.symbol}</p>
+                <h2 className="font-display text-2xl font-bold" style={{ color: "#f5f7fb" }}>
+                  {result.name}
+                </h2>
+                <p className="text-sm" style={{ color: "#6b7a94" }}>{result.symbol}</p>
               </div>
-              <div className={`px-3 py-1.5 rounded-full text-xs font-bold ${getRiskColor(result.riskLevel).lightBg} ${getRiskColor(result.riskLevel).text} border ${getRiskColor(result.riskLevel).border}`}>
+              <div
+                className="px-4 py-1.5 rounded-full text-xs font-bold"
+                style={{
+                  background: getRiskColor(result.riskLevel).hex + "18",
+                  color: getRiskColor(result.riskLevel).hex,
+                  border: `1px solid ${getRiskColor(result.riskLevel).hex}30`,
+                }}
+              >
                 {getRiskColor(result.riskLevel).label}
               </div>
             </div>
-            <p className="text-xs text-slate-400 font-mono break-all">{result.address}</p>
+            <p className="text-xs font-mono break-all" style={{ color: "#4a5568" }}>
+              {result.address}
+            </p>
           </div>
 
-          {/* Medidor */}
+          {/* Risk meter */}
           <RiskMeter analysis={result} />
 
-          {/* Resumen humano */}
-          <div className="bg-blue-50 rounded-2xl border border-blue-200 p-6">
-            <h3 className="text-sm font-bold text-blue-800 mb-2">💭 En palabras simples</h3>
-            <p className="text-sm text-blue-900 leading-relaxed">{result.humanSummary}</p>
+          {/* Human summary */}
+          <div
+            className="rounded-2xl border p-6"
+            style={{ background: "rgba(201,169,110,0.04)", borderColor: "rgba(201,169,110,0.12)" }}
+          >
+            <h3 className="text-sm font-bold mb-2" style={{ color: "#c9a96e" }}>
+              💭 En palabras simples
+            </h3>
+            <p className="text-sm leading-relaxed" style={{ color: "#a0aec0" }}>
+              {result.humanSummary}
+            </p>
           </div>
 
-          {/* Advertencias */}
+          {/* Warnings */}
           <div>
-            <h3 className="text-sm font-bold text-slate-700 mb-3">
+            <h3 className="text-sm font-bold mb-3" style={{ color: "#8a94a8" }}>
               {result.checks.length} {result.checks.length === 1 ? "señal encontrada" : "señales encontradas"}
             </h3>
             <div className="space-y-3">
-              {result.checks.map((check, i) => (
-                <WarningCard key={check.id} check={check} index={i} />
+              {result.checks.map((check) => (
+                <WarningCard key={check.id} check={check} />
               ))}
             </div>
           </div>
 
-          {/* Recomendación final */}
-          <div className={`rounded-2xl border p-6 ${
-            result.riskLevel === "critical"
-              ? "bg-red-50 border-red-200"
-              : result.riskLevel === "high"
-              ? "bg-orange-50 border-orange-200"
-              : result.riskLevel === "medium"
-              ? "bg-amber-50 border-amber-200"
-              : "bg-emerald-50 border-emerald-200"
-          }`}>
-            <h3 className="text-sm font-bold mb-2 text-slate-800">✅ Recomendación</h3>
-            <p className="text-sm text-slate-700 leading-relaxed">{result.recommendation}</p>
+          {/* Recommendation */}
+          <div
+            className="rounded-2xl border p-6"
+            style={{
+              background:
+                result.riskLevel === "critical"
+                  ? "rgba(245,101,101,0.04)"
+                  : result.riskLevel === "high"
+                  ? "rgba(237,137,54,0.04)"
+                  : result.riskLevel === "medium"
+                  ? "rgba(237,137,54,0.03)"
+                  : "rgba(72,187,120,0.04)",
+              borderColor:
+                result.riskLevel === "critical"
+                  ? "rgba(245,101,101,0.12)"
+                  : result.riskLevel === "high"
+                  ? "rgba(237,137,54,0.12)"
+                  : result.riskLevel === "medium"
+                  ? "rgba(237,137,54,0.1)"
+                  : "rgba(72,187,120,0.12)",
+            }}
+          >
+            <h3 className="text-sm font-bold mb-2" style={{ color: "#e8ecf4" }}>
+              ✅ Recomendación
+            </h3>
+            <p className="text-sm leading-relaxed" style={{ color: "#a0aec0" }}>
+              {result.recommendation}
+            </p>
           </div>
 
-          {/* Botones de acción */}
+          {/* Action buttons */}
           <div className="flex gap-3">
             <button
               onClick={copyReport}
-              className="flex-1 bg-slate-100 text-slate-700 font-medium px-4 py-3 rounded-xl text-sm hover:bg-slate-200 transition-colors border border-slate-200"
+              className="flex-1 font-medium px-4 py-3.5 rounded-xl text-sm transition-colors border"
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                color: "#8a94a8",
+                borderColor: "rgba(255,255,255,0.08)",
+              }}
             >
               📋 Copiar reporte
             </button>
@@ -202,23 +260,59 @@ ${result.checks.map((c) => `• ${c.title}: ${c.humanText}`).join("\n")}
                 setResult(null);
                 setAddress("");
               }}
-              className="flex-1 bg-blue-600 text-white font-medium px-4 py-3 rounded-xl text-sm hover:bg-blue-700 transition-colors shadow-sm"
+              className="flex-1 font-bold px-4 py-3.5 rounded-xl text-sm transition-all"
+              style={{
+                background: "linear-gradient(135deg, #c9a96e, #a08050)",
+                color: "#0c1222",
+              }}
             >
               🔍 Analizar otro token
             </button>
           </div>
 
           {/* Disclaimer */}
-          <div className="bg-slate-50 rounded-xl border border-slate-200 p-4">
-            <p className="text-[11px] text-slate-500 leading-relaxed">
-              <strong>Disclaimer:</strong> Esta herramienta no es asesoría financiera. No garantiza que un token sea seguro o fraudulento. Solo analiza señales de riesgo disponibles públicamente para ayudar a tomar decisiones más informadas. Un token puede parecer seguro ahora y cambiar después.
+          <div
+            className="rounded-xl p-4"
+            style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}
+          >
+            <p className="text-[11px] leading-relaxed" style={{ color: "#4a5568" }}>
+              <strong style={{ color: "#6b7a94" }}>Disclaimer:</strong> Esta herramienta no es asesoría financiera. No garantiza que un token sea seguro o fraudulento. Solo analiza señales de riesgo disponibles públicamente para ayudar a tomar decisiones más informadas. Un token puede parecer seguro ahora y cambiar después.
             </p>
           </div>
 
-          {/* Explicaciones */}
+          {/* Explanations */}
           <HumanExplanation />
         </div>
       )}
     </div>
+  );
+}
+
+function DemoButton({
+  emoji,
+  title,
+  desc,
+  borderColor,
+  onClick,
+}: {
+  emoji: string;
+  title: string;
+  desc: string;
+  borderColor: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="rounded-xl p-4 text-left transition-all hover:shadow-lg"
+      style={{
+        background: "rgba(255,255,255,0.02)",
+        border: `1px solid ${borderColor}`,
+      }}
+    >
+      <div className="text-2xl mb-2">{emoji}</div>
+      <div className="text-sm font-semibold" style={{ color: "#e8ecf4" }}>{title}</div>
+      <div className="text-xs mt-1" style={{ color: "#6b7a94" }}>{desc}</div>
+    </button>
   );
 }
