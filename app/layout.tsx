@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { WalletContextProvider } from "@/components/WalletProvider";
+import { I18nProvider } from "@/components/I18nProvider";
 
 export const metadata: Metadata = {
   title: "ShadowScan — Solana Security",
@@ -15,9 +16,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <WalletContextProvider>
-          {children}
-        </WalletContextProvider>
+        <I18nProvider>
+          <WalletContextProvider>
+            {children}
+          </WalletContextProvider>
+        </I18nProvider>
       </body>
     </html>
   );
