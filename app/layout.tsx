@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { WalletContextProvider } from "@/components/WalletProvider";
-import { I18nProvider } from "@/components/I18nProvider";
 
 export const metadata: Metadata = {
-  title: "ShadowScan — Solana Security",
-  description: "No mint address needed. Just security.",
+  title: "Antes de Comprar — Revisa antes de invertir",
+  description: "Traducimos señales técnicas de riesgo en advertencias humanas antes de que compres un token en Solana.",
 };
 
 export default function RootLayout({
@@ -14,13 +13,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        <I18nProvider>
-          <WalletContextProvider>
-            {children}
-          </WalletContextProvider>
-        </I18nProvider>
+    <html lang="es">
+      <body className="min-h-screen bg-slate-50">
+        <WalletContextProvider>
+          {children}
+        </WalletContextProvider>
       </body>
     </html>
   );

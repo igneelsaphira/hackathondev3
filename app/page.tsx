@@ -1,55 +1,45 @@
-import Navbar from "@/components/Navbar";
-import TokenScanner from "@/components/TokenScanner";
-import TransactionGuard from "@/components/TransactionGuard";
-import SecurityStats from "@/components/SecurityStats";
-import PermissionScanner from "@/components/PermissionScanner";
-import DrainerSimulator from "@/components/DrainerSimulator";
-import ScamReporter from "@/components/ScamReporter";
+import TokenAnalyzer from "@/components/TokenAnalyzer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#050505]">
-      <Navbar />
+    <main className="min-h-screen bg-slate-50">
+      {/* Navbar */}
+      <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+              AC
+            </div>
+            <span className="font-bold text-slate-800">Antes de Comprar</span>
+          </div>
+          <span className="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded-full">
+            Hackathon MVP
+          </span>
+        </div>
+      </nav>
 
-      <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+      <div className="max-w-3xl mx-auto px-4 py-10">
         {/* Hero */}
-        <div className="text-center py-8">
-          <h1 className="text-3xl md:text-5xl font-bold mb-3 text-glow">
-            <span className="block">NO MINT ADDRESS?</span>
-            <span className="block text-[#00ff41]">NO PROBLEM.</span>
+        <div className="text-center mb-10">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3 tracking-tight">
+            Revisa antes de invertir
           </h1>
-          <p className="text-sm md:text-base text-gray-400 max-w-xl mx-auto font-mono">
-            ShadowScan protects Solana users without requiring deep technical knowledge.
-            Search by name. Verify before you sign. Stay alive.
+          <p className="text-base text-slate-500 max-w-lg mx-auto leading-relaxed">
+            Si una app puede dejarte comprar una moneda, también debería ayudarte a entender si podrás salir. 
+            Traducimos señales técnicas en advertencias que cualquiera puede entender.
           </p>
         </div>
 
-        <SecurityStats />
+        {/* Analizador */}
+        <TokenAnalyzer />
 
-        {/* Primary tools */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <TokenScanner />
-          <TransactionGuard />
-        </div>
-
-        {/* Secondary tools */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <PermissionScanner />
-          <DrainerSimulator />
-        </div>
-
-        {/* Community */}
-        <div className="max-w-2xl mx-auto">
-          <ScamReporter />
-        </div>
-
-        {/* Footer info */}
-        <div className="border-t border-[#1a1a1a] pt-6 pb-8 text-center space-y-2">
-          <p className="text-xs text-gray-600 font-mono">
-            ShadowScan does not store your data. All scans happen client-side.
+        {/* Footer */}
+        <div className="mt-16 pt-8 border-t border-slate-200 text-center space-y-3">
+          <p className="text-xs text-slate-400">
+            Hecho para hackathon. No es asesoría financiera. DYOR.
           </p>
-          <p className="text-[10px] text-gray-700 font-mono">
-            Built for hackathon. Not financial advice. DYOR.
+          <p className="text-[11px] text-slate-300">
+            Los datos se consultan en tiempo real cuando es posible. Algunas señales requieren verificación manual.
           </p>
         </div>
       </div>
