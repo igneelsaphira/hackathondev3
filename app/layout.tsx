@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { WalletContextProvider } from "@/components/WalletProvider";
 
 export const metadata: Metadata = {
-  title: "Antes de Comprar — Revisa antes de invertir",
-  description: "Traducimos señales técnicas de riesgo en advertencias humanas antes de que compres un token en Solana.",
+  title: "PagaSimple — Paga con SOL, recibe USDC",
+  description: "Paga con crypto sin que el vendedor sepa qué es crypto. Tú usas SOL, él recibe dólares digitales (USDC).",
 };
 
 export default function RootLayout({
@@ -17,12 +16,20 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;900&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className="min-h-screen" style={{ background: "#0c1222" }}>
-        <WalletContextProvider>
-          {children}
-        </WalletContextProvider>
+      <body
+        className="antialiased"
+        style={{
+          fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          background: "#0c1222",
+          color: "#e8ecf4",
+        }}
+      >
+        {children}
       </body>
     </html>
   );

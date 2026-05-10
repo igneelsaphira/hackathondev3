@@ -5,10 +5,13 @@ import LandingView from "@/components/LandingView";
 import SellerView from "@/components/SellerView";
 import BuyerView from "@/components/BuyerView";
 import { PaymentData } from "@/components/SellerView";
+import { useLang } from "@/lib/useLang";
+import { t, Lang } from "@/lib/translations";
 
 export default function Home() {
   const [mode, setMode] = useState<"landing" | "seller" | "buyer">("landing");
   const [payment, setPayment] = useState<PaymentData | null>(null);
+  const [lang, toggleLang] = useLang();
 
   return (
     <main className="min-h-screen" style={{ background: "#0c1222" }}>
@@ -32,25 +35,39 @@ export default function Home() {
               className="font-semibold text-sm tracking-wide"
               style={{ color: "#e8ecf4" }}
             >
-              PagaSimple
+              {t(lang, "navTitle")}
             </span>
           </button>
-          <span
-            className="text-[11px] font-medium tracking-wider uppercase px-3 py-1 rounded-full"
-            style={{
-              color: "#8a94a8",
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.06)",
-            }}
-          >
-            Hackathon MVP
-          </span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleLang}
+              className="text-xs font-medium px-3 py-1.5 rounded-full transition-colors hover:opacity-80"
+              style={{
+                color: "#c9a96e",
+                border: "1px solid rgba(201,169,110,0.3)",
+                background: "rgba(201,169,110,0.06)",
+              }}
+            >
+              {lang === "es" ? "ES → EN" : "EN → ES"}
+            </button>
+            <span
+              className="text-[11px] font-medium tracking-wider uppercase px-3 py-1 rounded-full hidden sm:inline-block"
+              style={{
+                color: "#8a94a8",
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              {t(lang, "navBadge")}
+            </span>
+          </div>
         </div>
       </nav>
 
       <div className="max-w-3xl mx-auto px-5 py-10">
         {mode === "landing" && (
           <LandingView
+            lang={lang}
             onModeSelect={(m) => {
               setMode(m);
               setPayment(null);
@@ -59,12 +76,14 @@ export default function Home() {
         )}
         {mode === "seller" && (
           <SellerView
+            lang={lang}
             onBack={() => setMode("landing")}
             onPaymentCreated={(p) => setPayment(p)}
           />
         )}
         {mode === "buyer" && (
           <BuyerView
+            lang={lang}
             onBack={() => setMode("landing")}
             initialPayment={payment}
           />
@@ -76,12 +95,10 @@ export default function Home() {
           style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
         >
           <p className="text-xs" style={{ color: "#4a5568" }}>
-            Hecho para hackathon Dev3pack x ChileDAO. No es asesoría
-            financiera.
+            {t(lang, "footerMade")}
           </p>
           <p className="text-[11px]" style={{ color: "#2d3748" }}>
-            Los swaps se ejecutan vía Jupiter. El vendedor recibe USDC
-            estable.
+            {t(lang, "footerVia")}
           </p>
         </div>
       </div>

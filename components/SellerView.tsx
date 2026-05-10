@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { t, Lang } from "@/lib/translations";
 
 interface Props {
+  lang: Lang;
   onBack: () => void;
   onPaymentCreated: (data: PaymentData) => void;
 }
@@ -14,16 +16,17 @@ export interface PaymentData {
   sellerAddress: string;
   itemName: string;
   paymentId: string;
+  receiveToken: "USDC" | "SOL";
 }
 
-// Mock: precio SOL en CLP (actualizar con API real)
 const SOL_TO_CLP = 185000;
 const USD_TO_CLP = 920;
 
-export default function SellerView({ onBack, onPaymentCreated }: Props) {
+export default function SellerView({ lang, onBack, onPaymentCreated }: Props) {
   const [amount, setAmount] = useState("");
   const [itemName, setItemName] = useState("");
   const [sellerAddress, setSellerAddress] = useState("");
+  const [receiveToken, setReceiveToken] = useState<"USDC" | "SOL">("USDC");
   const [step, setStep] = useState<"form" | "link">("form");
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
 
@@ -42,6 +45,7 @@ export default function SellerView({ onBack, onPaymentCreated }: Props) {
       sellerAddress: sellerAddress || "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
       itemName: itemName || "Producto",
       paymentId: id,
+      receiveToken,
     };
 
     setPaymentData(data);
@@ -59,7 +63,7 @@ export default function SellerView({ onBack, onPaymentCreated }: Props) {
     return (
       <div className="space-y-6">
         <button onClick={onBack} className="text-sm font-medium flex items-center gap-1.5" style={{ color: "#8a94a8" }}>
-          ← Volver
+          {t(lang, "sellerBack")}
         </button>
 
         <div
@@ -68,10 +72,10 @@ export default function SellerView({ onBack, onPaymentCreated }: Props) {
         >
           <div className="text-4xl mb-3">🎉</div>
           <h2 className="text-xl font-bold mb-2" style={{ color: "#68d391" }}>
-            ¡Link de pago listo!
+            {t(lang, "linkReady")}
           </h2>
           <p className="text-sm mb-6" style={{ color: "#8a94a8" }}>
-            Comparte este link con tu comprador. Él paga con SOL y tú recibes USDC.
+            {t(lang, "linkReadyDesc")}
           </p>
 
           <div
@@ -79,19 +83,19 @@ export default function SellerView({ onBack, onPaymentCreated }: Props) {
             style={{ background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.08)" }}
           >
             <div className="flex justify-between items-center mb-3">
-              <span className="text-xs font-medium" style={{ color: "#6b7a94" }}>Monto</span>
+              <span className="text-xs font-medium" style={{ color: "#6b7a94" }}>{t(lang, "amount")}</span>
               <span className="text-lg font-bold" style={{ color: "#f5f7fb" }}>
-                ${paymentData.amountClp.toLocaleString("es-CL")} CLP
+                ${paymentData.amountClp.toLocaleString(lang === "es" ? "es-CL" : "en-US")} CLP
               </span>
             </div>
             <div className="flex justify-between items-center mb-3">
-              <span className="text-xs font-medium" style={{ color: "#6b7a94" }}>≈</span>
+              <span className="text-xs font-medium" style={{ color: "#6b7a94" }}>{t(lang, "approx")}</span>
               <span className="text-sm" style={{ color: "#8a94a8" }}>
                 {paymentData.amountUsd.toFixed(2)} USDC
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-xs font-medium" style={{ color: "#6b7a94" }}>Producto</span>
+              <span className="text-xs font-medium" style={{ color: "#6b7a94" }}>{t(lang, "product")}</span>
               <span className="text-sm font-medium" style={{ color: "#e8ecf4" }}>{paymentData.itemName}</span>
             </div>
           </div>
@@ -106,7 +110,7 @@ export default function SellerView({ onBack, onPaymentCreated }: Props) {
                 borderColor: "rgba(255,255,255,0.08)",
               }}
             >
-              📋 Copiar link
+              {t(lang, "copyLink")}
             </button>
             <button
               onClick={onBack}
@@ -116,13 +120,12 @@ export default function SellerView({ onBack, onPaymentCreated }: Props) {
                 color: "#0c1222",
               }}
             >
-              Crear otro
+              {t(lang, "createAnother")}
             </button>
           </div>
 
-          {/* Simulated QR */}
           <div className="mt-6 pt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-            <p className="text-xs mb-3" style={{ color: "#4a5568" }}>Código QR simulado</p>
+            <p className="text-xs mb-3" style={{ color: "#4a5568" }}>{t(lang, "qrCode")}</p>
             <div
               className="w-40 h-40 mx-auto rounded-xl flex items-center justify-center"
               style={{ background: "#fff", padding: 8 }}
@@ -148,14 +151,14 @@ export default function SellerView({ onBack, onPaymentCreated }: Props) {
   return (
     <div className="space-y-5">
       <button onClick={onBack} className="text-sm font-medium flex items-center gap-1.5" style={{ color: "#8a94a8" }}>
-        ← Volver al inicio
+        {t(lang, "sellerBack")}
       </button>
 
       <h2 className="font-display text-2xl font-bold" style={{ color: "#f5f7fb" }}>
-        Recibir un pago
+        {t(lang, "sellerTitle")}
       </h2>
       <p className="text-sm" style={{ color: "#8a94a8" }}>
-        Ingresa los datos y genera un link para que te paguen.
+        {t(lang, "sellerDesc")}
       </p>
 
       <div
@@ -164,13 +167,13 @@ export default function SellerView({ onBack, onPaymentCreated }: Props) {
       >
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: "#8a94a8" }}>
-            📋 ¿Qué vendes?
+            {t(lang, "whatSell")}
           </label>
           <input
             type="text"
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
-            placeholder="Ej: Café con leche, Zapatillas Nike..."
+            placeholder={t(lang, "whatSellPlaceholder")}
             className="w-full rounded-xl px-4 py-3.5 text-sm outline-none"
             style={{
               background: "rgba(0,0,0,0.25)",
@@ -182,13 +185,13 @@ export default function SellerView({ onBack, onPaymentCreated }: Props) {
 
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: "#8a94a8" }}>
-            💰 ¿Cuánto cuesta? (CLP)
+            {t(lang, "howMuch")}
           </label>
           <input
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            placeholder="Ej: 3500"
+            placeholder={t(lang, "howMuchPlaceholder")}
             className="w-full rounded-xl px-4 py-3.5 text-sm outline-none font-mono"
             style={{
               background: "rgba(0,0,0,0.25)",
@@ -205,13 +208,13 @@ export default function SellerView({ onBack, onPaymentCreated }: Props) {
 
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: "#8a94a8" }}>
-            👥 Tu dirección de wallet (opcional para demo)
+            {t(lang, "yourWallet")}
           </label>
           <input
             type="text"
             value={sellerAddress}
             onChange={(e) => setSellerAddress(e.target.value)}
-            placeholder="7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"
+            placeholder={t(lang, "walletPlaceholder")}
             className="w-full rounded-xl px-4 py-3.5 text-sm outline-none font-mono text-xs"
             style={{
               background: "rgba(0,0,0,0.25)",
@@ -230,7 +233,7 @@ export default function SellerView({ onBack, onPaymentCreated }: Props) {
             color: "#0c1222",
           }}
         >
-          🔗 Generar link de pago
+          {t(lang, "generateLink")}
         </button>
       </div>
     </div>

@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { PaymentData } from "./SellerView";
+import { t, Lang } from "@/lib/translations";
 
 interface Props {
+  lang: Lang;
   onBack: () => void;
   initialPayment?: PaymentData | null;
 }
@@ -11,7 +13,7 @@ interface Props {
 const SOL_TO_CLP = 185000;
 const USD_TO_CLP = 920;
 
-export default function BuyerView({ onBack, initialPayment }: Props) {
+export default function BuyerView({ lang, onBack, initialPayment }: Props) {
   const [step, setStep] = useState<"input" | "review" | "processing" | "success">(
     initialPayment ? "review" : "input"
   );
@@ -19,31 +21,33 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
   const [payment, setPayment] = useState<PaymentData | null>(initialPayment || null);
   const [txHash, setTxHash] = useState("");
 
-  // Demo payment data
   const demoPayments: Record<string, PaymentData> = {
     DEMO1: {
       amountClp: 3500,
       amountUsd: 3.80,
       solPrice: 0.0189,
       sellerAddress: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
-      itemName: "Café con leche + croissant",
+      itemName: lang === "es" ? "Café con leche + croissant" : "Coffee + croissant",
       paymentId: "DEMO1",
+      receiveToken: "USDC",
     },
     DEMO2: {
       amountClp: 45000,
       amountUsd: 48.91,
       solPrice: 0.2432,
       sellerAddress: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
-      itemName: "Zapatillas usadas talla 42",
+      itemName: lang === "es" ? "Zapatillas usadas talla 42" : "Used sneakers size 42",
       paymentId: "DEMO2",
+      receiveToken: "USDC",
     },
     DEMO3: {
       amountClp: 120000,
       amountUsd: 130.43,
       solPrice: 0.6486,
       sellerAddress: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
-      itemName: "Clases de guitarra - 4 sesiones",
+      itemName: lang === "es" ? "Clases de guitarra - 4 sesiones" : "Guitar lessons - 4 sessions",
       paymentId: "DEMO3",
+      receiveToken: "USDC",
     },
   };
 
@@ -54,14 +58,14 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
       setStep("review");
       return;
     }
-    // For any input, create a mock payment
     const mock: PaymentData = {
       amountClp: 5000,
       amountUsd: 5.43,
       solPrice: 0.027,
       sellerAddress: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
-      itemName: "Producto",
+      itemName: lang === "es" ? "Producto" : "Product",
       paymentId: id,
+      receiveToken: "USDC",
     };
     setPayment(mock);
     setStep("review");
@@ -70,11 +74,7 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
   const handlePay = async () => {
     if (!payment) return;
     setStep("processing");
-
-    // Simulate swap + transfer
     await new Promise((r) => setTimeout(r, 2500));
-
-    // Mock tx hash
     const hash = "5" + Array.from({ length: 87 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
     setTxHash(hash);
     setStep("success");
@@ -84,7 +84,7 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
     return (
       <div className="space-y-6">
         <button onClick={onBack} className="text-sm font-medium flex items-center gap-1.5" style={{ color: "#8a94a8" }}>
-          ← Volver
+          {t(lang, "sellerBack")}
         </button>
 
         <div
@@ -93,10 +93,10 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
         >
           <div className="text-5xl mb-4">✅</div>
           <h2 className="text-2xl font-bold mb-2" style={{ color: "#68d391" }}>
-            ¡Pago completado!
+            {t(lang, "successTitle")}
           </h2>
           <p className="text-sm mb-6" style={{ color: "#8a94a8" }}>
-            El vendedor ya recibió sus USDC. Todo fue automático.
+            {t(lang, "successDesc")}
           </p>
 
           <div
@@ -104,19 +104,19 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
             style={{ background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.08)" }}
           >
             <div className="flex justify-between">
-              <span className="text-xs" style={{ color: "#6b7a94" }}>Producto</span>
+              <span className="text-xs" style={{ color: "#6b7a94" }}>{t(lang, "product")}</span>
               <span className="text-sm font-medium" style={{ color: "#e8ecf4" }}>{payment.itemName}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-xs" style={{ color: "#6b7a94" }}>Tú pagaste</span>
+              <span className="text-xs" style={{ color: "#6b7a94" }}>{t(lang, "youPaid")}</span>
               <span className="text-sm font-medium" style={{ color: "#e8ecf4" }}>{payment.solPrice.toFixed(4)} SOL</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-xs" style={{ color: "#6b7a94" }}>Vendedor recibió</span>
+              <span className="text-xs" style={{ color: "#6b7a94" }}>{t(lang, "sellerGot")}</span>
               <span className="text-sm font-medium" style={{ color: "#68d391" }}>{payment.amountUsd.toFixed(2)} USDC</span>
             </div>
             <div className="pt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-              <span className="text-xs" style={{ color: "#4a5568" }}>Hash de transacción</span>
+              <span className="text-xs" style={{ color: "#4a5568" }}>{t(lang, "txHash")}</span>
               <p className="text-[10px] font-mono mt-1 break-all" style={{ color: "#2d3748" }}>{txHash}</p>
             </div>
           </div>
@@ -129,7 +129,7 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
               color: "#0c1222",
             }}
           >
-            Hacer otro pago
+            {t(lang, "payAgain")}
           </button>
         </div>
       </div>
@@ -147,14 +147,10 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
             className="w-10 h-10 rounded-full border-[3px] mx-auto mb-4 animate-spin"
             style={{ borderColor: "rgba(201,169,110,0.2)", borderTopColor: "#c9a96e" }}
           />
-          <p className="text-sm font-medium mb-1" style={{ color: "#e8ecf4" }}>Procesando pago...</p>
-          <p className="text-xs" style={{ color: "#6b7a94" }}>
-            1. Swapeando SOL → USDC via Jupiter
-          </p>
-          <p className="text-xs" style={{ color: "#6b7a94" }}>
-            2. Transfiriendo USDC al vendedor
-          </p>
-          <p className="text-xs mt-2" style={{ color: "#4a5568" }}>Esto tarda unos segundos</p>
+          <p className="text-sm font-medium mb-1" style={{ color: "#e8ecf4" }}>{t(lang, "processing")}</p>
+          <p className="text-xs" style={{ color: "#6b7a94" }}>{t(lang, "processingStep1")}</p>
+          <p className="text-xs" style={{ color: "#6b7a94" }}>{t(lang, "processingStep2")}</p>
+          <p className="text-xs mt-2" style={{ color: "#4a5568" }}>{t(lang, "processingWait")}</p>
         </div>
       </div>
     );
@@ -164,11 +160,11 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
     return (
       <div className="space-y-5">
         <button onClick={() => setStep("input")} className="text-sm font-medium flex items-center gap-1.5" style={{ color: "#8a94a8" }}>
-          ← Volver
+          {t(lang, "sellerBack")}
         </button>
 
         <h2 className="font-display text-2xl font-bold" style={{ color: "#f5f7fb" }}>
-          Revisar pago
+          {t(lang, "reviewTitle")}
         </h2>
 
         <div
@@ -176,33 +172,31 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
           style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)" }}
         >
           <div className="flex justify-between items-center pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <span className="text-sm" style={{ color: "#8a94a8" }}>Producto</span>
+            <span className="text-sm" style={{ color: "#8a94a8" }}>{t(lang, "product")}</span>
             <span className="text-base font-semibold" style={{ color: "#f5f7fb" }}>{payment.itemName}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm" style={{ color: "#8a94a8" }}>Precio</span>
+            <span className="text-sm" style={{ color: "#8a94a8" }}>{t(lang, "price")}</span>
             <span className="text-2xl font-bold font-display" style={{ color: "#f5f7fb" }}>
-              ${payment.amountClp.toLocaleString("es-CL")} <span className="text-sm font-body font-normal" style={{ color: "#6b7a94" }}>CLP</span>
+              ${payment.amountClp.toLocaleString(lang === "es" ? "es-CL" : "en-US")} <span className="text-sm font-body font-normal" style={{ color: "#6b7a94" }}>CLP</span>
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm" style={{ color: "#8a94a8" }}>Vendedor recibe</span>
+            <span className="text-sm" style={{ color: "#8a94a8" }}>{t(lang, "sellerReceives")}</span>
             <span className="text-lg font-bold" style={{ color: "#68d391" }}>{payment.amountUsd.toFixed(2)} USDC</span>
           </div>
           <div className="flex justify-between items-center pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-            <span className="text-sm" style={{ color: "#8a94a8" }}>Tú pagas</span>
+            <span className="text-sm" style={{ color: "#8a94a8" }}>{t(lang, "youPay")}</span>
             <span className="text-lg font-bold" style={{ color: "#f6ad55" }}>{payment.solPrice.toFixed(4)} SOL</span>
           </div>
 
-          {/* Swap explanation */}
           <div
             className="rounded-xl p-4 text-xs leading-relaxed"
             style={{ background: "rgba(201,169,110,0.04)", border: "1px solid rgba(201,169,110,0.1)", color: "#a0aec0" }}
           >
-            <strong style={{ color: "#c9a96e" }}>¿Qué pasa aquí?</strong>
+            <strong style={{ color: "#c9a96e" }}>{t(lang, "whatHappens")}</strong>
             <br />
-            Tu wallet tiene SOL. La app va a usar Jupiter para cambiar esos SOL a USDC automáticamente, 
-            y luego enviar los USDC al vendedor. Todo en una sola transacción.
+            {t(lang, "whatHappensDesc")}
           </div>
 
           <button
@@ -213,11 +207,11 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
               color: "#0c1222",
             }}
           >
-            💳 Pagar {payment.solPrice.toFixed(4)} SOL
+            {t(lang, "payButton")} {payment.solPrice.toFixed(4)} SOL
           </button>
 
           <p className="text-[11px] text-center" style={{ color: "#4a5568" }}>
-            En modo demo la transacción es simulada. En producción usaría tu wallet Phantom.
+            {t(lang, "demoDisclaimer")}
           </p>
         </div>
       </div>
@@ -227,14 +221,14 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
   return (
     <div className="space-y-5">
       <button onClick={onBack} className="text-sm font-medium flex items-center gap-1.5" style={{ color: "#8a94a8" }}>
-        ← Volver al inicio
+        {t(lang, "buyerBack")}
       </button>
 
       <h2 className="font-display text-2xl font-bold" style={{ color: "#f5f7fb" }}>
-        Pagar algo
+        {t(lang, "buyerTitle")}
       </h2>
       <p className="text-sm" style={{ color: "#8a94a8" }}>
-        Ingresa el código del pago o prueba con un ejemplo.
+        {t(lang, "buyerDesc")}
       </p>
 
       <div
@@ -243,14 +237,14 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
       >
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: "#8a94a8" }}>
-            🔍 Código de pago
+            {t(lang, "paymentCode")}
           </label>
           <input
             type="text"
             value={paymentId}
             onChange={(e) => setPaymentId(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleLookup()}
-            placeholder="Ej: DEMO1"
+            placeholder={t(lang, "paymentCodePlaceholder")}
             className="w-full rounded-xl px-4 py-3.5 text-sm outline-none font-mono"
             style={{
               background: "rgba(0,0,0,0.25)",
@@ -269,17 +263,17 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
             color: "#0c1222",
           }}
         >
-          Buscar pago
+          {t(lang, "searchPayment")}
         </button>
       </div>
 
-      {/* Quick demos */}
       <div>
         <p className="text-xs font-medium mb-3" style={{ color: "#6b7a94" }}>
-          Prueba con un ejemplo:
+          {t(lang, "tryExample")}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <DemoPayButton
+            lang={lang}
             data={demoPayments.DEMO1}
             onClick={() => {
               setPayment(demoPayments.DEMO1);
@@ -287,6 +281,7 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
             }}
           />
           <DemoPayButton
+            lang={lang}
             data={demoPayments.DEMO2}
             onClick={() => {
               setPayment(demoPayments.DEMO2);
@@ -294,6 +289,7 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
             }}
           />
           <DemoPayButton
+            lang={lang}
             data={demoPayments.DEMO3}
             onClick={() => {
               setPayment(demoPayments.DEMO3);
@@ -306,7 +302,7 @@ export default function BuyerView({ onBack, initialPayment }: Props) {
   );
 }
 
-function DemoPayButton({ data, onClick }: { data: PaymentData; onClick: () => void }) {
+function DemoPayButton({ lang, data, onClick }: { lang: Lang; data: PaymentData; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -318,7 +314,7 @@ function DemoPayButton({ data, onClick }: { data: PaymentData; onClick: () => vo
     >
       <div className="text-xs font-medium mb-1 truncate" style={{ color: "#e8ecf4" }}>{data.itemName}</div>
       <div className="text-sm font-bold" style={{ color: "#c9a96e" }}>
-        ${data.amountClp.toLocaleString("es-CL")}
+        ${data.amountClp.toLocaleString(lang === "es" ? "es-CL" : "en-US")}
       </div>
       <div className="text-[10px] mt-0.5" style={{ color: "#4a5568" }}>
         {data.solPrice.toFixed(4)} SOL → {data.amountUsd.toFixed(2)} USDC

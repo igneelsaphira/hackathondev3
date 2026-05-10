@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { t, Lang } from "@/lib/translations";
 
 interface Props {
+  lang: Lang;
   onModeSelect: (mode: "seller" | "buyer") => void;
 }
 
-export default function LandingView({ onModeSelect }: Props) {
+export default function LandingView({ lang, onModeSelect }: Props) {
   return (
     <div className="space-y-8">
       {/* Hero */}
@@ -15,15 +16,13 @@ export default function LandingView({ onModeSelect }: Props) {
           className="inline-block text-[11px] font-semibold tracking-[0.1em] uppercase mb-5 px-4 py-1.5 rounded-full"
           style={{ color: "#c9a96e", border: "1px solid rgba(201,169,110,0.3)", background: "rgba(201,169,110,0.06)" }}
         >
-          Hackathon Dev3pack x ChileDAO
+          {t(lang, "heroBadge")}
         </div>
         <h1 className="font-display text-5xl md:text-[56px] font-black leading-[1.05] mb-4" style={{ color: "#f5f7fb" }}>
-          PagaSimple
+          {t(lang, "heroTitle")}
         </h1>
         <p className="text-base leading-relaxed max-w-lg mx-auto" style={{ color: "#8a94a8" }}>
-          Paga con crypto sin que el vendedor sepa qué es crypto. 
-          Tú usas SOL, él recibe dólares digitales (USDC). 
-          Sin comisiones de banco, sin esperar.
+          {t(lang, "heroSubtitle")}
         </p>
       </div>
 
@@ -31,18 +30,18 @@ export default function LandingView({ onModeSelect }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <ProblemCard
           emoji="🚨"
-          title="Yape cobra"
-          text="Las apps de pago se quedan con un % de cada venta."
+          title={t(lang, "problem1Title")}
+          text={t(lang, "problem1Text")}
         />
         <ProblemCard
           emoji="🤔"
-          title="El vendedor no entiende crypto"
-          text="No quiere saber qué es un wallet ni un token."
+          title={t(lang, "problem2Title")}
+          text={t(lang, "problem2Text")}
         />
         <ProblemCard
           emoji="⏰"
-          title="Transferencias tardan"
-          text="Los bancos tardan horas o días en fines de semana."
+          title={t(lang, "problem3Title")}
+          text={t(lang, "problem3Text")}
         />
       </div>
 
@@ -52,11 +51,10 @@ export default function LandingView({ onModeSelect }: Props) {
         style={{ background: "rgba(201,169,110,0.04)", borderColor: "rgba(201,169,110,0.12)" }}
       >
         <h2 className="text-xl font-bold mb-3" style={{ color: "#c9a96e" }}>
-          ✅ La solución
+          {t(lang, "solutionTitle")}
         </h2>
         <p className="text-sm leading-relaxed max-w-md mx-auto mb-6" style={{ color: "#a0aec0" }}>
-          Tú pagas con SOL → la app lo convierte automáticamente a USDC → el vendedor recibe dólares digitales estables. 
-          Él los puede cambiar a pesos cuando quiera. Todo en segundos.
+          {t(lang, "solutionText")}
         </p>
         <div className="flex justify-center gap-3 text-2xl">
           <span>💳</span>
@@ -70,17 +68,17 @@ export default function LandingView({ onModeSelect }: Props) {
       {/* Mode selection */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <ModeCard
-          emoji="🏧"
-          title="Soy vendedor"
-          subtitle="Quiero recibir pagos"
-          desc="Genera un link o QR para que te paguen. Recibes USDC directo a tu wallet."
+          emoji="🏪"
+          title={t(lang, "sellerCardTitle")}
+          subtitle={t(lang, "sellerCardSubtitle")}
+          desc={t(lang, "sellerCardDesc")}
           onClick={() => onModeSelect("seller")}
         />
         <ModeCard
           emoji="👤"
-          title="Soy comprador"
-          subtitle="Quiero pagar algo"
-          desc="Paga con SOL y la app hace la conversión automática. El vendedor recibe USDC."
+          title={t(lang, "buyerCardTitle")}
+          subtitle={t(lang, "buyerCardSubtitle")}
+          desc={t(lang, "buyerCardDesc")}
           onClick={() => onModeSelect("buyer")}
         />
       </div>
@@ -88,7 +86,7 @@ export default function LandingView({ onModeSelect }: Props) {
       {/* Demo hint */}
       <div className="text-center">
         <p className="text-xs" style={{ color: "#4a5568" }}>
-          💡 Tip: En la hackathon, prueba el flujo completo — genera un pago como vendedor y luego págalo como comprador.
+          {t(lang, "demoHint")}
         </p>
       </div>
     </div>
