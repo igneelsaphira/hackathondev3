@@ -10,7 +10,7 @@ export const translations = {
     heroBadge: "Hackathon Dev3pack x ChileDAO",
     heroTitle: "PagaSimple",
     heroSubtitle: "Paga con crypto sin que el vendedor sepa qué es crypto. Tú usas SOL, él recibe dólares digitales (USDC). Sin comisiones de banco, sin esperar.",
-    problem1Title: "Yape cobra",
+    problem1Title: "Apps de pago cobran",
     problem1Text: "Las apps de pago se quedan con un % de cada venta.",
     problem2Title: "El vendedor no entiende crypto",
     problem2Text: "No quiere saber qué es un wallet ni un token.",
