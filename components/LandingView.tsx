@@ -83,6 +83,48 @@ export default function LandingView({ lang, onModeSelect }: Props) {
         />
       </div>
 
+      {/* Devnet info */}
+      <div
+        className="rounded-2xl border p-6"
+        style={{ background: "rgba(101,178,255,0.03)", borderColor: "rgba(101,178,255,0.12)" }}
+      >
+        <h3 className="text-sm font-bold mb-2" style={{ color: "#65b2ff" }}>
+          🧪 ¿Quieres probar con dinero de juguete?
+        </h3>
+        <p className="text-xs leading-relaxed mb-3" style={{ color: "#8a94a8" }}>
+          Solana tiene una red de prueba llamada <strong style={{ color: "#65b2ff" }}>devnet</strong> donde puedes conseguir SOL gratis. 
+          Es dinero de juguete, sin valor real, perfecto para probar sin riesgo.
+        </p>
+        <div className="flex gap-2 flex-wrap">
+          <a
+            href="https://faucet.solana.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-medium px-3 py-2 rounded-lg border transition-colors"
+            style={{
+              color: "#65b2ff",
+              borderColor: "rgba(101,178,255,0.2)",
+              background: "rgba(101,178,255,0.05)",
+            }}
+          >
+            🔍 Faucet de SOL (gratis)
+          </a>
+          <a
+            href="https://phantom.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-medium px-3 py-2 rounded-lg border transition-colors"
+            style={{
+              color: "#65b2ff",
+              borderColor: "rgba(101,178,255,0.2)",
+              background: "rgba(101,178,255,0.05)",
+            }}
+          >
+            👛 Descargar Phantom Wallet
+          </a>
+        </div>
+      </div>
+
       {/* Demo hint */}
       <div className="text-center">
         <p className="text-xs" style={{ color: "#4a5568" }}>

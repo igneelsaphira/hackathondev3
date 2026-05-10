@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import { t, Lang } from "@/lib/translations";
 
 interface Props {
@@ -145,25 +146,21 @@ export default function SellerView({ lang, onBack, onPaymentCreated }: Props) {
               {t(lang, "createAnother")}
             </button>
           </div>
-
+          {/* Real QR Code */}
           <div className="mt-6 pt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
             <p className="text-xs mb-3" style={{ color: "#4a5568" }}>{t(lang, "qrCode")}</p>
-            <div
-              className="w-40 h-40 mx-auto rounded-xl flex items-center justify-center"
-              style={{ background: "#fff", padding: 8 }}
-            >
-              <div className="w-full h-full grid grid-cols-6 grid-rows-6 gap-0.5">
-                {Array.from({ length: 36 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="rounded-sm"
-                    style={{
-                      background: Math.random() > 0.4 ? "#0c1222" : "transparent",
-                    }}
-                  />
-                ))}
-              </div>
+            <div className="w-48 h-48 mx-auto rounded-xl flex items-center justify-center bg-white p-3">
+              <QRCodeSVG
+                value={`${typeof window !== "undefined" ? window.location.origin : ""}?pay=${paymentData.paymentId}`}
+                size={168}
+                level="M"
+                bgColor="#ffffff"
+                fgColor="#0c1222"
+              />
             </div>
+            <p className="text-[10px] mt-2" style={{ color: "#2d3748" }}>
+              Escanea para ir directo al pago
+            </p>
           </div>
         </div>
       </div>

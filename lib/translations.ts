@@ -45,7 +45,7 @@ export const translations = {
     copyLink: "📋 Copiar link",
     copied: "✅ ¡Copiado!",
     createAnother: "Crear otro",
-    qrCode: "QR simulado (decorativo)",
+    qrCode: "Código QR",
 
     // Buyer
     buyerBack: "← Volver al inicio",
@@ -125,7 +125,7 @@ export const translations = {
     copyLink: "📋 Copy link",
     copied: "✅ Copied!",
     createAnother: "Create another",
-    qrCode: "Simulated QR (decorative)",
+    qrCode: "QR Code",
 
     // Buyer
     buyerBack: "← Back to home",
