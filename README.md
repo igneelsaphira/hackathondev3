@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PagaSimple
 
-## Getting Started
+> Paga con SOL. El vendedor recibe dólares digitales (USDC). Sin que nadie tenga que entender qué es un smart contract.
 
-First, run the development server:
+## El problema
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+En Chile miles de personas venden por Instagram, WhatsApp y MercadoLibre. Para cobrar usan:
+- **Transferencias bancarias** → tardan horas o días
+- **Yape/otras apps** → se quedan con comisión de cada venta
+- **Efectivo** → inseguro, especialmente con desconocidos
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Además, hay gente que tiene SOL (criptomoneda de Solana) y no sabe cómo pagarle a alguien que **no quiere saber nada de crypto**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## La solución
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+PagaSimple permite que:
+- **El comprador** pague con SOL
+- **La app** convierte automáticamente SOL → USDC (dólar digital estable)
+- **El vendedor** recibe USDC en su wallet
 
-## Learn More
+El vendedor ve: *"Recibiste $3.80 USDC (~$3.500 CLP)"*. No necesita saber qué es Jupiter, qué es un swap, ni qué es una wallet. Solo ve que le llegó plata estable.
 
-To learn more about Next.js, take a look at the following resources:
+## Demo en vivo
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+🔗 https://hackathondev3.vercel.app
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Flujo de la app
 
-## Deploy on Vercel
+1. **Vendedor** ingresa producto + monto en CLP → genera link/QR
+2. **Comprador** abre el link, revisa el resumen → aprueba el pago
+3. **La app** swapea SOL → USDC via Jupiter y transfiere al vendedor
+4. **Ambos** reciben confirmación instantánea
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tecnología
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Frontend:** Next.js 16 + TypeScript + Tailwind CSS
+- **Blockchain:** Solana (mainnet)
+- **Swap:** Jupiter Aggregator (SOL → USDC)
+- **Deploy:** Vercel
+
+## Categoría
+
+**Payments / Consumer dApps**
+
+## Lo que funciona en la demo
+
+- Generación de links de pago con monto en CLP
+- Simulación de swap SOL → USDC
+- Confirmación visual de pago completado
+- 3 ejemplos de demo listos para probar
+
+## Limitaciones honestas
+
+- Las transacciones on-chain están simuladas en esta versión de MVP
+- El swap real requeriría integración completa con Jupiter API + wallet Phantom
+- Los precios SOL/CLP son mock para la demo
+- No incluye sistema de disputas (escrow completo)
+
+## Próximos pasos
+
+- Integrar wallet Phantom real para pagos on-chain
+- Agregar sistema de escrow con disputas
+- Notificaciones push al vendedor
+- Dashboard de ventas para comerciantes
+- Soporte para múltiples stablecoins
+
+## Autora
+
+María Paz Matus — Hackathon Dev3pack x ChileDAO 2026
+
+## Repositorio
+
+https://github.com/igneelsaphira/hackathondev3
