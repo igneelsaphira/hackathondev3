@@ -1,17 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import LandingView from "@/components/LandingView";
-import SellerView from "@/components/SellerView";
+import SellerView, { PaymentData } from "@/components/SellerView";
 import BuyerView from "@/components/BuyerView";
-import { PaymentData } from "@/components/SellerView";
 import { useLang } from "@/lib/useLang";
-import { t, Lang } from "@/lib/translations";
+import { t } from "@/lib/translations";
 
-export default function Home() {
+function HomeContent() {
   const [mode, setMode] = useState<"landing" | "seller" | "buyer">("landing");
   const [payment, setPayment] = useState<PaymentData | null>(null);
   const [lang, toggleLang] = useLang();
+  const searchParams = useSearchParams();
+
+  // Si hay ?pay=XXX en la URL, mostrar directo el BuyerView
+  useEffect(() => {
+    const payId = searchParams.get("pay");
+    if (payId) {
+      // En demo: creamos un pago genérico con ese ID
+      // En producción real se buscaría en base de datos
+      const mockPayment: PaymentData = {
+        amountClp: 5000,
+        amountUsd: 5.43,
+        solPrice: 0.027,
+        sellerAddress: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
+        itemName: lang === "es" ? "Producto" : "Product",
+        paymentId: payId,
+        receiveToken: "USDC",
+      };
+      setPayment(mockPayment);
+      setMode("buyer");
+    }
+  }, [searchParams, lang]);
 
   return (
     <main className="min-h-screen" style={{ background: "#0c1222" }}>
@@ -22,7 +43,14 @@ export default function Home() {
       >
         <div className="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
           <button
-            onClick={() => setMode("landing")}
+            onClick={() => {
+              setMode("landing");
+              setPayment(null);
+              // Limpiar query param
+              if (typeof window !== "undefined") {
+                window.history.replaceState({}, "", window.location.pathname);
+              }
+            }}
             className="flex items-center gap-3"
           >
             <div
@@ -84,7 +112,13 @@ export default function Home() {
         {mode === "buyer" && (
           <BuyerView
             lang={lang}
-            onBack={() => setMode("landing")}
+            onBack={() => {
+              setMode("landing");
+              setPayment(null);
+              if (typeof window !== "undefined") {
+                window.history.replaceState({}, "", window.location.pathname);
+              }
+            }}
             initialPayment={payment}
           />
         )}
@@ -103,5 +137,20 @@ export default function Home() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0c1222" }}>
+        <div
+          className="w-10 h-10 rounded-full border-[3px] animate-spin"
+          style={{ borderColor: "rgba(201,169,110,0.2)", borderTopColor: "#c9a96e" }}
+        />
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }

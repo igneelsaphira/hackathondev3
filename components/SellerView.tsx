@@ -53,10 +53,32 @@ export default function SellerView({ lang, onBack, onPaymentCreated }: Props) {
     onPaymentCreated(data);
   };
 
-  const copyLink = () => {
+  const [copied, setCopied] = useState(false);
+
+  const copyLink = async () => {
     if (!paymentData) return;
     const link = `${typeof window !== "undefined" ? window.location.origin : ""}?pay=${paymentData.paymentId}`;
-    navigator.clipboard.writeText(link);
+    
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(link);
+      } else {
+        // Fallback para HTTP o navegadores antiguos
+        const textarea = document.createElement("textarea");
+        textarea.value = link;
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Si todo falla, mostramos el link para que lo copie manual
+      alert(`Copia este link:\n${link}`);
+    }
   };
 
   if (step === "link" && paymentData) {
@@ -105,12 +127,12 @@ export default function SellerView({ lang, onBack, onPaymentCreated }: Props) {
               onClick={copyLink}
               className="flex-1 font-medium px-4 py-3 rounded-xl text-sm border transition-colors"
               style={{
-                background: "rgba(255,255,255,0.03)",
-                color: "#8a94a8",
-                borderColor: "rgba(255,255,255,0.08)",
+                background: copied ? "rgba(72,187,120,0.1)" : "rgba(255,255,255,0.03)",
+                color: copied ? "#68d391" : "#8a94a8",
+                borderColor: copied ? "rgba(72,187,120,0.3)" : "rgba(255,255,255,0.08)",
               }}
             >
-              {t(lang, "copyLink")}
+              {copied ? t(lang, "copied") : t(lang, "copyLink")}
             </button>
             <button
               onClick={onBack}
